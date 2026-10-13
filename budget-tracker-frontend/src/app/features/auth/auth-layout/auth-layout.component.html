@@ -1,0 +1,20 @@
+<div class="auth-shell">
+  <aside class="brand-panel">
+    <div class="ledger-lines" aria-hidden="true"></div>
+    <div class="brand-copy">
+      <span class="brand-kicker">Finance workspace</span>
+      <div class="brand-mark">Ledger</div>
+      <p class="brand-tagline">A calmer way to see what your team is spending, earning, and planning.</p>
+      <div class="brand-feature"><span>✦</span> Private by workspace. Clear by design.</div>
+    </div>
+  </aside>
+
+  <main class="form-panel">
+    <div class="form-card">
+      <span class="form-kicker">Secure access</span>
+      <h1>{{ title }}</h1>
+      <p class="subtitle" *ngIf="subtitle">{{ subtitle }}</p>
+      <ng-content></ng-content>
+    </div>
+  </main>
+</div>

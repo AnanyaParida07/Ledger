@@ -1,0 +1,48 @@
+<app-auth-layout title="Create your workspace" subtitle="Start tracking budgets for your team">
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <label class="field">
+      <span>Company name</span>
+      <input type="text" formControlName="companyName" placeholder="Acme Co" autocomplete="organization" />
+      <small class="error" *ngIf="form.get('companyName')?.touched && form.get('companyName')?.invalid">
+        Company name is required.
+      </small>
+    </label>
+
+    <label class="field">
+      <span>Your name</span>
+      <input type="text" formControlName="fullName" placeholder="Alice Admin" autocomplete="name" />
+      <small class="error" *ngIf="form.get('fullName')?.touched && form.get('fullName')?.invalid">
+        Your name is required.
+      </small>
+    </label>
+
+    <label class="field">
+      <span>Email</span>
+      <input type="email" formControlName="email" placeholder="[email protected]" autocomplete="email" />
+      <small class="error" *ngIf="form.get('email')?.touched && form.get('email')?.invalid">
+        Enter a valid email address.
+      </small>
+    </label>
+
+    <label class="field">
+      <span>Password</span>
+      <input
+        type="password"
+        formControlName="password"
+        placeholder="At least 8 characters"
+        autocomplete="new-password"
+      />
+      <small class="error" *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
+        Password must be at least 8 characters.
+      </small>
+    </label>
+
+    <p class="form-error" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+
+    <button type="submit" class="btn-primary" [disabled]="isSubmitting()">
+      {{ isSubmitting() ? 'Creating workspace…' : 'Create workspace' }}
+    </button>
+  </form>
+
+  <p class="switch-link">Already have a workspace? <a routerLink="/login">Log in</a></p>
+</app-auth-layout>

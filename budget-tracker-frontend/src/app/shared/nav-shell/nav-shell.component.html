@@ -1,0 +1,36 @@
+<header class="app-header">
+  <span class="brand-mark-sm">Ledger</span>
+  <span class="brand-tag">Money, made visible</span>
+
+  <nav class="app-nav">
+    <a routerLink="/analytics" routerLinkActive="active">Analytics</a>
+    <a routerLink="/dashboard" routerLinkActive="active">Categories</a>
+    <a routerLink="/transactions" routerLinkActive="active">Transactions</a>
+    <a routerLink="/budgets" routerLinkActive="active">Budgets</a>
+    <a routerLink="/recurring" routerLinkActive="active">Recurring</a>
+    <a *ngIf="authService.role() === 'ADMIN'" routerLink="/team" routerLinkActive="active">Team</a>
+  </nav>
+
+  <div class="app-header-right">
+    <button class="profile-trigger" type="button" (click)="toggleProfile()" aria-label="Open profile">
+      <span class="profile-name">{{ profile()?.fullName || 'My profile' }}</span><span class="role-badge">{{ authService.role() === 'ADMIN' ? 'Admin' : 'User' }}</span>
+    </button>
+    <button class="theme-toggle" type="button" (click)="themeService.toggle()" [attr.aria-label]="themeService.isDark() ? 'Switch to light theme' : 'Switch to dark theme'">
+      {{ themeService.isDark() ? '☀' : '☾' }}
+    </button>
+  </div>
+</header>
+
+<aside class="profile-drawer" [class.open]="profileOpen()" aria-label="Profile panel">
+  <div class="drawer-head"><div><span class="eyebrow">Account</span><h2>Your profile</h2></div><button class="btn-icon" (click)="profileOpen.set(false)">×</button></div>
+  <ng-container *ngIf="profile() as user">
+    <div *ngIf="!profileEditing()"><p class="profile-large">{{ user.fullName }}</p><p class="subtitle">{{ user.email }}</p><span class="badge">{{ user.role === 'ADMIN' ? 'Admin' : 'User' }}</span><button class="btn-primary drawer-action" (click)="profileEditing.set(true)">Edit profile</button></div>
+    <form *ngIf="profileEditing()" class="drawer-form" (submit)="$event.preventDefault(); saveProfile()"><label class="field"><span>Username</span><input [value]="profileName()" (input)="profileName.set($any($event.target).value)" /></label><label class="field"><span>Email</span><input type="email" [value]="profileEmail()" (input)="profileEmail.set($any($event.target).value)" /></label><button class="btn-primary" type="submit">Save changes</button></form>
+    <div class="drawer-account-actions">
+      <a routerLink="/change-password" (click)="profileOpen.set(false)">Change password</a>
+      <button type="button" (click)="logout()">Log out</button>
+    </div>
+  </ng-container>
+</aside>
+
+<router-outlet></router-outlet>

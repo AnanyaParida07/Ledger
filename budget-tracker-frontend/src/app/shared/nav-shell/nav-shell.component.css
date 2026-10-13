@@ -1,0 +1,102 @@
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.1rem 2rem;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 8px 24px var(--color-shadow);
+}
+
+.brand-mark-sm {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.3rem;
+  color: var(--color-ink);
+}
+
+.app-nav {
+  display: flex;
+  gap: 1.4rem;
+  flex: 1;
+}
+
+.app-nav a {
+  font-size: 0.88rem;
+  color: var(--color-ink-soft);
+  text-decoration: none;
+  padding: 0.3rem 0;
+  border-bottom: 2px solid transparent;
+}
+
+.app-nav a.active,
+.app-nav a:hover {
+  color: var(--color-ink);
+  border-bottom-color: var(--color-accent);
+}
+
+.app-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.role-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.profile-trigger { display: flex; flex-direction: column; align-items: flex-end; border: 0; background: none; cursor: pointer; color: var(--color-ink); }
+.profile-name { font-size: 0.82rem; font-weight: 600; }
+.profile-trigger .role-badge { font-size: 0.65rem; }
+.profile-drawer { position: fixed; z-index: 20; top: 0; right: 0; width: min(360px, 92vw); height: 100vh; padding: 1.6rem; background: var(--color-surface); border-left: 1px solid var(--color-border); box-shadow: -20px 0 50px var(--color-shadow); transform: translateX(105%); transition: transform 0.25s ease; }
+.profile-drawer.open { transform: translateX(0); }
+.drawer-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2.5rem; }
+.drawer-head h2 { margin: 0.3rem 0; }
+.profile-large { font-size: 1.4rem; font-weight: 600; margin-bottom: 0.3rem; }
+.drawer-action { margin-top: 2rem; }
+.drawer-form .btn-primary { margin-top: 0.5rem; }
+
+.brand-tag {
+  color: var(--color-ink-soft);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.drawer-account-actions { display: grid; gap: 0.35rem; margin-top: 2.2rem; padding-top: 1.1rem; border-top: 1px solid var(--color-border); }
+.drawer-account-actions a, .drawer-account-actions button { display: flex; align-items: center; min-height: 42px; padding: 0 0.75rem; border: 0; border-radius: 9px; background: transparent; color: var(--color-ink); font: 0.9rem var(--font-body); text-align: left; text-decoration: none; cursor: pointer; transition: background 0.15s ease, color 0.15s ease; }
+.drawer-account-actions a:hover { background: var(--color-accent-soft); color: var(--color-accent); }
+.drawer-account-actions button { color: var(--color-error); }
+.drawer-account-actions button:hover { background: color-mix(in srgb, var(--color-error) 12%, transparent); }
+
+.theme-toggle {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface-raised);
+  color: var(--color-ink);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.theme-toggle:hover {
+  transform: rotate(12deg) scale(1.05);
+  background: var(--color-accent-soft);
+}
+
+@media (max-width: 760px) {
+  .brand-tag { display: none; }
+  .app-header { gap: 1rem; padding: 0.9rem 1rem; overflow-x: auto; flex-wrap: wrap; }
+  .app-nav { order: 3; flex-basis: 100%; overflow-x: auto; }
+  .app-header-right { margin-left: auto; }
+}

@@ -1,0 +1,44 @@
+<div class="page">
+  <h1>Team</h1>
+  <p class="subtitle">Invite members to record transactions for this workspace.</p>
+  <label class="field list-search"><span>Search team</span><input #teamSearch type="search" (input)="applySearch(teamSearch.value)" placeholder="Name or email" /></label>
+
+  <form [formGroup]="form" (ngSubmit)="invite()" class="inline-form" novalidate>
+    <label class="field">
+      <span>Full name</span>
+      <input type="text" formControlName="fullName" placeholder="Jane Smith" />
+    </label>
+    <label class="field">
+      <span>Email</span>
+      <input type="email" formControlName="email" placeholder="jane@example.com" />
+    </label>
+    <button type="submit" class="btn-primary btn-inline" [disabled]="form.invalid">Invite member</button>
+  </form>
+
+  <p *ngIf="errorMessage()" class="form-error">{{ errorMessage() }}</p>
+  <div *ngIf="invitation() as invited" class="invite-success">
+    <strong>{{ invited.fullName }} has been invited.</strong>
+    Their sign-in details and temporary password were sent to {{ invited.email }}.
+  </div>
+
+  <div *ngIf="viewingUser() as user" class="detail-panel">
+    <span><strong>{{ user.fullName }}</strong><br /><small>{{ user.email }} · {{ user.role }}</small></span>
+    <button type="button" class="btn-icon" (click)="viewingUser.set(null)">Close</button>
+  </div>
+
+  <ul class="data-list" *ngIf="!isLoading(); else loading">
+    <li *ngFor="let user of filteredUsers()">
+      <span><strong>{{ user.fullName }}</strong><br /><small>{{ user.email }}</small></span>
+      <span class="row-actions">
+        <span class="badge" [class.muted]="user.role === 'MEMBER'">{{ user.role }}</span>
+        <button type="button" class="btn-icon" (click)="view(user)">View</button>
+        <button type="button" class="btn-icon" (click)="startEdit(user)">Edit</button>
+        <button type="button" class="btn-icon danger" (click)="remove(user)">Delete</button>
+      </span>
+    </li>
+    <li *ngIf="editingUser() as user" class="team-edit-row"><label class="field"><span>Username</span><input #editFull [value]="editName()" (input)="editName.set(editFull.value)" /></label><label class="field"><span>Email</span><input #editMail type="email" [value]="editEmail()" (input)="editEmail.set(editMail.value)" /></label><button class="btn-primary btn-inline" (click)="saveEdit()">Save</button><button class="btn-icon" (click)="editingUser.set(null)">Cancel</button></li>
+    <li *ngIf="filteredUsers().length === 0" class="empty">No team members found.</li>
+  </ul>
+  <div class="pagination" *ngIf="totalPages() > 1"><button class="btn-icon" (click)="goToPage(page() - 1)" [disabled]="page() === 0">Previous</button><span>Page {{ page() + 1 }} of {{ totalPages() }}</span><button class="btn-icon" (click)="goToPage(page() + 1)" [disabled]="page() + 1 >= totalPages()">Next</button></div>
+  <ng-template #loading><p class="subtitle">Loading…</p></ng-template>
+</div>

@@ -1,0 +1,75 @@
+<div class="page">
+  <h1>Recurring transactions</h1>
+  <p class="subtitle">Runs automatically each day at 01:00 server time.</p>
+  <label class="field list-search"><span>Search recurring transactions</span><input #recurringSearch type="search" (input)="applySearch(recurringSearch.value)" placeholder="Category or description" /></label>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="inline-form" novalidate>
+    <label class="field">
+      <span>Category</span>
+      <select formControlName="categoryId">
+        <option value="" disabled>Select…</option>
+        <option *ngFor="let category of categories()" [value]="category.id">{{ category.name }}</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span>Amount</span>
+      <input type="number" step="0.01" formControlName="amount" placeholder="0.00" />
+    </label>
+
+    <label class="field">
+      <span>Type</span>
+      <select formControlName="type">
+        <option value="EXPENSE">Expense</option>
+        <option value="INCOME">Income</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span>Frequency</span>
+      <select formControlName="frequency">
+        <option value="DAILY">Daily</option>
+        <option value="WEEKLY">Weekly</option>
+        <option value="MONTHLY">Monthly</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span>Starts</span>
+      <input type="date" formControlName="startDate" />
+    </label>
+
+    <button type="submit" class="btn-primary btn-inline" [disabled]="form.invalid">{{ editingId() ? 'Save changes' : 'Add' }}</button>
+    <button *ngIf="editingId()" type="button" class="btn-icon" (click)="cancelEdit()">Cancel</button>
+  </form>
+
+  <div *ngIf="viewingRecurring() as r" class="detail-panel">
+    <span>
+      <strong>{{ r.categoryName }}</strong><br />
+      <small>{{ r.description || 'No description' }} · {{ r.frequency | titlecase }} · next {{ r.nextRunDate }}</small>
+    </span>
+    <button type="button" class="btn-icon" (click)="viewingRecurring.set(null)">Close</button>
+  </div>
+
+  <ul class="data-list" *ngIf="!isLoading(); else loading">
+    <li *ngFor="let r of visibleRecurring()">
+      <span>
+        <strong>{{ r.categoryName }}</strong>
+        <span class="badge muted">{{ r.frequency | titlecase }}</span>
+        <span class="badge" [class.muted]="!r.active">{{ r.active ? 'Active' : 'Paused' }}</span>
+      </span>
+      <span class="amount" [class.income]="r.type === 'INCOME'" [class.expense]="r.type === 'EXPENSE'">
+        {{ r.type === 'EXPENSE' ? '-' : '+' }}{{ r.amount | number: '1.2-2' }}
+      </span>
+      <span class="row-actions">
+        <button type="button" class="btn-icon" (click)="view(r)">View</button>
+        <button type="button" class="btn-icon" (click)="edit(r)">Edit</button>
+        <button type="button" class="btn-icon" (click)="toggleActive(r)">{{ r.active ? 'Pause' : 'Resume' }}</button>
+        <button type="button" class="btn-icon danger" (click)="remove(r)">Delete</button>
+      </span>
+    </li>
+    <li *ngIf="visibleRecurring().length === 0" class="empty">No recurring transactions found.</li>
+  </ul>
+  <div class="pagination" *ngIf="totalPages() > 1"><button class="btn-icon" (click)="goToPage(page() - 1)" [disabled]="page() === 0">Previous</button><span>Page {{ page() + 1 }} of {{ totalPages() }}</span><button class="btn-icon" (click)="goToPage(page() + 1)" [disabled]="page() + 1 >= totalPages()">Next</button></div>
+  <ng-template #loading><p class="subtitle">Loading…</p></ng-template>
+</div>

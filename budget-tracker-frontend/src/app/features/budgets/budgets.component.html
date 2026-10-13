@@ -1,0 +1,65 @@
+<div class="page">
+  <h1>Budgets</h1>
+  <p class="subtitle">Spend against limit for {{ month() }}.</p>
+
+  <form *ngIf="authService.role() === 'ADMIN'" [formGroup]="form" (ngSubmit)="submit()" class="inline-form" novalidate>
+    <label class="field">
+      <span>Category</span>
+      <select formControlName="categoryId">
+        <option value="" disabled>Select…</option>
+        <option *ngFor="let category of categories()" [value]="category.id">{{ category.name }}</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span>Monthly limit</span>
+      <input type="number" step="0.01" formControlName="monthlyLimit" placeholder="0.00" />
+    </label>
+
+    <button type="submit" class="btn-primary btn-inline" [disabled]="form.invalid">Set budget</button>
+  </form>
+  <label class="field list-search"><span>Search budgets</span><input #budgetSearch type="search" (input)="applySearch(budgetSearch.value)" placeholder="Find a category" /></label>
+
+  <div *ngIf="viewingBudget() as b" class="detail-panel">
+    <span>
+      <strong>{{ b.categoryName }}</strong><br />
+      <small>{{ b.month }} · spent {{ b.spent | number: '1.2-2' }} · remaining {{ b.remaining | number: '1.2-2' }}</small>
+    </span>
+    <button type="button" class="btn-icon" (click)="viewingBudget.set(null)">Close</button>
+  </div>
+
+  <div *ngIf="!isLoading(); else loading">
+    <div class="budget-row" *ngFor="let b of visibleBudgets()">
+      <div class="budget-row-head">
+        <span><strong>{{ b.categoryName }}</strong></span>
+        <span class="budget-meta">
+          <ng-container *ngIf="editingBudget()?.categoryId !== b.categoryId; else editBudgetLimit">
+            {{ b.spent | number: '1.2-2' }} / {{ b.monthlyLimit | number: '1.2-2' }}
+          </ng-container>
+          <ng-template #editBudgetLimit>
+            {{ b.spent | number: '1.2-2' }} /
+            <input #limitInput class="row-number-input" type="number" step="0.01" [value]="editLimit()" (input)="editLimit.set(limitInput.valueAsNumber)" />
+          </ng-template>
+          <span class="badge" [class.muted]="!b.overBudget">{{ b.percentUsed }}%</span>
+          <span class="row-actions">
+            <button type="button" class="btn-icon" (click)="view(b)">View</button>
+            <button *ngIf="authService.role() === 'ADMIN' && editingBudget()?.categoryId !== b.categoryId" type="button" class="btn-icon" (click)="startEdit(b)">Edit</button>
+            <button *ngIf="authService.role() === 'ADMIN' && editingBudget()?.categoryId === b.categoryId" type="button" class="btn-icon" (click)="saveEdit()">Save</button>
+            <button *ngIf="authService.role() === 'ADMIN' && editingBudget()?.categoryId === b.categoryId" type="button" class="btn-icon" (click)="editingBudget.set(null)">Cancel</button>
+            <button *ngIf="authService.role() === 'ADMIN'" type="button" class="btn-icon danger" (click)="remove(b)">Delete</button>
+          </span>
+        </span>
+      </div>
+      <div class="budget-bar-track">
+        <div
+          class="budget-bar-fill"
+          [class.over]="b.overBudget"
+          [style.width.%]="b.percentUsed > 100 ? 100 : b.percentUsed"
+        ></div>
+      </div>
+    </div>
+    <p *ngIf="visibleBudgets().length === 0" class="subtitle">No budgets found.</p>
+  </div>
+  <div class="pagination" *ngIf="totalPages() > 1"><button class="btn-icon" (click)="goToPage(page() - 1)" [disabled]="page() === 0">Previous</button><span>Page {{ page() + 1 }} of {{ totalPages() }}</span><button class="btn-icon" (click)="goToPage(page() + 1)" [disabled]="page() + 1 >= totalPages()">Next</button></div>
+  <ng-template #loading><p class="subtitle">Loading…</p></ng-template>
+</div>

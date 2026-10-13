@@ -1,0 +1,39 @@
+<div class="page">
+  <h1>Categories</h1>
+  <p class="subtitle">
+    This list is scoped to your tenant automatically by the backend - nothing in this frontend filters it by tenant.
+  </p>
+
+  <form *ngIf="authService.role() === 'ADMIN'" [formGroup]="form" (ngSubmit)="addCategory()" class="inline-form" novalidate>
+    <label class="field">
+      <span>Name</span>
+      <input type="text" formControlName="name" placeholder="New category name" />
+    </label>
+    <button type="submit" class="btn-primary btn-inline">Add</button>
+  </form>
+  <label class="field list-search"><span>Search categories</span><input #categorySearch type="search" (input)="applySearch(categorySearch.value)" placeholder="Find a category" /></label>
+
+  <div *ngIf="viewingCategory() as category" class="detail-panel">
+    <span><strong>{{ category.name }}</strong><br /><small>ID: {{ category.id }}</small></span>
+    <button type="button" class="btn-icon" (click)="viewingCategory.set(null)">Close</button>
+  </div>
+
+  <ul class="data-list" *ngIf="!isLoading(); else loading">
+    <li *ngFor="let category of filteredCategories()">
+      <span *ngIf="editingCategory()?.id !== category.id">{{ category.name }}</span>
+      <span *ngIf="editingCategory()?.id === category.id" class="row-edit">
+        <input #categoryName [value]="editName()" (input)="editName.set(categoryName.value)" />
+      </span>
+      <span class="row-actions">
+        <button type="button" class="btn-icon" (click)="view(category)">View</button>
+        <button *ngIf="authService.role() === 'ADMIN' && editingCategory()?.id !== category.id" type="button" class="btn-icon" (click)="startEdit(category)">Edit</button>
+        <button *ngIf="authService.role() === 'ADMIN' && editingCategory()?.id === category.id" type="button" class="btn-icon" (click)="saveEdit()">Save</button>
+        <button *ngIf="authService.role() === 'ADMIN' && editingCategory()?.id === category.id" type="button" class="btn-icon" (click)="editingCategory.set(null)">Cancel</button>
+        <button *ngIf="authService.role() === 'ADMIN'" type="button" class="btn-icon danger" (click)="remove(category)">Delete</button>
+      </span>
+    </li>
+    <li *ngIf="filteredCategories().length === 0" class="empty">No categories found.</li>
+  </ul>
+  <div class="pagination" *ngIf="totalPages() > 1"><button class="btn-icon" (click)="goToPage(page() - 1)" [disabled]="page() === 0">Previous</button><span>Page {{ page() + 1 }} of {{ totalPages() }}</span><button class="btn-icon" (click)="goToPage(page() + 1)" [disabled]="page() + 1 >= totalPages()">Next</button></div>
+  <ng-template #loading><p class="subtitle">Loading…</p></ng-template>
+</div>

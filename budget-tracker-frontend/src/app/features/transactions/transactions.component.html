@@ -1,0 +1,79 @@
+<div class="page">
+  <h1>Transactions</h1>
+  <p class="subtitle">Expenses and income for {{ month() }}.</p>
+
+  <div class="search-panel">
+    <label class="field"><span>Category</span><select #category [value]="categoryFilter()" (change)="categoryFilter.set(category.value)"><option value="">All categories</option><option *ngFor="let c of categories()" [value]="c.id">{{ c.name }}</option></select></label>
+    <label class="field"><span>Type</span><select #type [value]="typeFilter()" (change)="typeFilter.set(type.value)"><option value="">All types</option><option value="EXPENSE">Expense</option><option value="INCOME">Income</option></select></label>
+    <label class="field"><span>Min amount</span><input #min type="number" [value]="minAmount()" (input)="minAmount.set(min.value)" /></label>
+    <label class="field"><span>Max amount</span><input #max type="number" [value]="maxAmount()" (input)="maxAmount.set(max.value)" /></label>
+    <label class="field"><span>From</span><input #from type="date" [value]="startDate()" (change)="startDate.set(from.value)" /></label>
+    <label class="field"><span>To</span><input #to type="date" [value]="endDate()" (change)="endDate.set(to.value)" /></label>
+    <button type="button" class="btn-primary btn-inline" (click)="applyFilters()">Search</button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="inline-form" novalidate>
+    <label class="field">
+      <span>Category</span>
+      <select formControlName="categoryId">
+        <option value="" disabled>Select…</option>
+        <option *ngFor="let category of categories()" [value]="category.id">{{ category.name }}</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span>Amount</span>
+      <input type="number" step="0.01" formControlName="amount" placeholder="0.00" />
+    </label>
+
+    <label class="field">
+      <span>Type</span>
+      <select formControlName="type">
+        <option value="EXPENSE">Expense</option>
+        <option value="INCOME">Income</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span>Date</span>
+      <input type="date" formControlName="transactionDate" />
+    </label>
+
+    <label class="field" style="flex: 2 1 200px">
+      <span>Description</span>
+      <input type="text" formControlName="description" placeholder="Optional" />
+    </label>
+
+    <button type="submit" class="btn-primary btn-inline" [disabled]="form.invalid">{{ editingId() ? 'Save changes' : 'Add' }}</button><button *ngIf="editingId()" type="button" class="btn-icon" (click)="cancelEdit()">Cancel</button>
+  </form>
+
+  <div class="list-toolbar" *ngIf="!isLoading()"><span>{{ totalElements() }} matching transactions</span><span><button class="sort-button" (click)="changeSort('transactionDate')">Date {{ sortBy() === 'transactionDate' ? (direction() === 'asc' ? '↑' : '↓') : '' }}</button><button class="sort-button" (click)="changeSort('amount')">Amount {{ sortBy() === 'amount' ? (direction() === 'asc' ? '↑' : '↓') : '' }}</button></span></div>
+  <div *ngIf="viewingTransaction() as t" class="detail-panel">
+    <span>
+      <strong>{{ t.categoryName }}</strong><br />
+      <small>{{ t.description || 'No description' }} · {{ t.transactionDate }} · {{ t.type | titlecase }}</small>
+    </span>
+    <button type="button" class="btn-icon" (click)="viewingTransaction.set(null)">Close</button>
+  </div>
+
+  <ul class="data-list" *ngIf="!isLoading(); else loading">
+    <li *ngFor="let t of transactions()">
+      <span>
+        <strong>{{ t.categoryName }}</strong>
+        <span *ngIf="t.description"> · {{ t.description }}</span>
+        <span class="badge muted">{{ t.transactionDate }}</span>
+      </span>
+      <span class="amount" [class.income]="t.type === 'INCOME'" [class.expense]="t.type === 'EXPENSE'">
+        {{ t.type === 'EXPENSE' ? '-' : '+' }}{{ t.amount | number: '1.2-2' }}
+      </span>
+      <span class="row-actions">
+        <button type="button" class="btn-icon" (click)="view(t)">View</button>
+        <button type="button" class="btn-icon" (click)="edit(t)">Edit</button>
+        <button type="button" class="btn-icon danger" (click)="remove(t.id)" aria-label="Delete transaction">Delete</button>
+      </span>
+    </li>
+    <li *ngIf="transactions().length === 0" class="empty">No transactions this month.</li>
+  </ul>
+  <div class="pagination" *ngIf="totalPages() > 1"><button class="btn-icon" (click)="goToPage(page() - 1)" [disabled]="page() === 0">Previous</button><span>Page {{ page() + 1 }} of {{ totalPages() }}</span><button class="btn-icon" (click)="goToPage(page() + 1)" [disabled]="page() + 1 >= totalPages()">Next</button></div>
+  <ng-template #loading><p class="subtitle">Loading…</p></ng-template>
+</div>

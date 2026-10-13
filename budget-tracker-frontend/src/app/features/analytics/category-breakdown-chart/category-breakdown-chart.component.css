@@ -1,0 +1,7 @@
+:host,
+ngx-charts-pie-chart {
+  display: block;
+  height: 360px;
+}
+
+::ng-deep .ngx-charts .pie-label { fill: var(--color-ink) !important; font-family: var(--font-body) !important; font-weight: 600; }

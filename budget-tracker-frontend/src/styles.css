@@ -1,0 +1,374 @@
+:root {
+  --color-bg: #faf8f3;
+  --color-surface: #ffffff;
+  --color-ink: #1b2420;
+  --color-ink-soft: #5b6560;
+  --color-border: #e4e0d4;
+  --color-accent: #1f6f52;
+  --color-accent-hover: #175940;
+  --color-accent-soft: #e7f1ec;
+  --color-error: #b3402a;
+  --color-panel-dark: #12241c;
+  --color-panel-dark-text: #f3efe4;
+  --color-surface-raised: #ffffff;
+  --color-shadow: rgba(27, 36, 32, 0.08);
+
+  --font-display: "Fraunces", serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", monospace;
+}
+
+:root[data-theme='dark'] {
+  --color-bg: #0d1713;
+  --color-surface: #14221c;
+  --color-surface-raised: #1b2d25;
+  --color-ink: #eef6f0;
+  --color-ink-soft: #a8b9ae;
+  --color-border: #2a4337;
+  --color-accent: #5bd19a;
+  --color-accent-hover: #8be4b8;
+  --color-accent-soft: #1e4032;
+  --color-error: #ff826d;
+  --color-panel-dark: #09100d;
+  --color-panel-dark-text: #f3efe4;
+  --color-shadow: rgba(0, 0, 0, 0.24);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+}
+
+/* Ledger-line style inputs: a single underline rather than a boxed field -
+   a small nod to writing on a ruled ledger page, used consistently across
+   the login and register forms. */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.4rem;
+  font-size: 0.85rem;
+  color: var(--color-ink-soft);
+}
+
+.field input {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-ink);
+  padding: 0.55rem 0.1rem;
+  border: none;
+  border-bottom: 1.5px solid var(--color-border);
+  background: var(--color-surface-raised);
+  border-radius: 7px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.field input:focus {
+  border-bottom-color: var(--color-accent);
+}
+
+.field input::placeholder {
+  color: #b9b4a5;
+}
+
+.error {
+  color: var(--color-error);
+  font-size: 0.78rem;
+}
+
+.form-error {
+  background: color-mix(in srgb, var(--color-error) 14%, transparent);
+  color: var(--color-error);
+  font-size: 0.85rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  margin: -0.4rem 0 1.2rem;
+}
+
+.invite-success {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-hover);
+  font-size: 0.85rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 8px;
+  margin: -0.4rem 0 1.2rem;
+}
+
+.invite-success code {
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.switch-link {
+  margin-top: 1.6rem;
+  font-size: 0.88rem;
+  color: var(--color-ink-soft);
+  text-align: center;
+}
+
+.switch-link a {
+  color: var(--color-accent);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.switch-link a:hover {
+  text-decoration: underline;
+}
+
+.field select {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-ink);
+  padding: 0.55rem 0.1rem;
+  border: none;
+  border-bottom: 1.5px solid var(--color-border);
+  background: var(--color-surface-raised);
+  border-radius: 7px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.field select:focus {
+  border-bottom-color: var(--color-accent);
+}
+
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2.75rem 2rem 4rem;
+}
+
+.page h1 {
+  font-size: 1.6rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.page .subtitle {
+  color: var(--color-ink-soft);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+  align-items: flex-end;
+}
+
+.search-panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 0.75rem; padding: 1rem; margin: 1.5rem 0; border: 1px solid var(--color-border); border-radius: 14px; background: var(--color-surface); box-shadow: 0 8px 20px var(--color-shadow); }
+.search-panel .field { margin: 0; }
+.search-panel .btn-inline { align-self: end; }
+.list-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin: 1rem 0 0.5rem; color: var(--color-ink-soft); font-size: 0.78rem; }
+.sort-button { border: 0; background: none; color: var(--color-accent); cursor: pointer; margin-left: 0.6rem; font: inherit; }
+.pagination { display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 1.2rem; color: var(--color-ink-soft); font-size: 0.82rem; }
+
+.inline-form .field {
+  flex: 1;
+  min-width: 140px;
+  margin-bottom: 0;
+}
+
+.btn-inline {
+  width: auto;
+  padding: 0.6rem 1.2rem;
+  white-space: nowrap;
+}
+
+.data-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.data-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 0.2rem;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.92rem;
+}
+
+.row-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.row-edit input,
+.row-number-input {
+  max-width: 140px;
+  font: inherit;
+  color: var(--color-ink);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-raised);
+  border-radius: 7px;
+  padding: 0.35rem 0.45rem;
+}
+
+.detail-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  margin: 0 0 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  box-shadow: 0 8px 20px var(--color-shadow);
+}
+
+.detail-panel small {
+  color: var(--color-ink-soft);
+}
+
+.data-list .amount {
+  font-family: var(--font-mono);
+}
+
+.data-list .amount.income {
+  color: var(--color-accent);
+}
+
+.data-list .amount.expense {
+  color: var(--color-error);
+}
+
+.data-list .empty {
+  color: var(--color-ink-soft);
+  font-style: italic;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  color: var(--color-ink-soft);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.2rem 0.4rem;
+}
+
+.btn-icon:hover {
+  color: var(--color-error);
+}
+
+.btn-icon.danger {
+  color: var(--color-error);
+}
+
+.budget-row {
+  padding: 1rem 0.2rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.budget-row-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  font-size: 0.92rem;
+  margin-bottom: 0.5rem;
+}
+
+.budget-meta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.budget-bar-track {
+  height: 6px;
+  border-radius: 4px;
+  background: var(--color-border);
+  overflow: hidden;
+}
+
+.budget-bar-fill {
+  height: 100%;
+  background: var(--color-accent);
+  transition: width 0.2s ease;
+}
+
+.budget-bar-fill.over {
+  background: var(--color-error);
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent-hover);
+}
+
+.badge.muted {
+  background: var(--color-border);
+  color: var(--color-ink-soft);
+}
+
+/* ngx-charts renders SVG text; keep its labels readable in either theme. */
+.ngx-charts text,
+.ngx-charts .tick text,
+.ngx-charts .legend-label-text {
+  fill: var(--color-ink-soft) !important;
+  color: var(--color-ink-soft) !important;
+  font-family: var(--font-body) !important;
+}
+
+.ngx-charts .gridline-path {
+  stroke: var(--color-border) !important;
+}

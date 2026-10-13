@@ -1,0 +1,78 @@
+<div class="page analytics-page">
+  <div class="page-heading">
+    <div class="hero-copy"><span class="eyebrow">Your financial pulse</span><h1>Analytics</h1><p class="subtitle">See the shape of your money at a glance.</p></div>
+    <div class="month-picker">
+      <span class="month-picker-label" id="month-picker-label">Viewing month</span>
+      <button
+        type="button"
+        class="month-trigger"
+        aria-labelledby="month-picker-label"
+        aria-haspopup="dialog"
+        [attr.aria-expanded]="monthPickerOpen()"
+        aria-controls="month-picker-panel"
+        (click)="toggleMonthPicker()"
+      >
+        <svg class="calendar-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.7" />
+          <path d="M7.5 3.5v3M16.5 3.5v3M4 9.5h16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7" />
+          <path d="M8 13h.01M12 13h.01M16 13h.01M8 16.5h.01M12 16.5h.01" stroke="currentColor" stroke-linecap="round" stroke-width="2.3" />
+        </svg>
+        <span class="month-trigger-value">{{ selectedMonthLabel() }}</span>
+        <svg class="month-chevron" viewBox="0 0 20 20" aria-hidden="true">
+          <path d="m5 7.5 5 5 5-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" />
+        </svg>
+      </button>
+
+      <div *ngIf="monthPickerOpen()" class="month-popover" id="month-picker-panel" role="dialog" aria-label="Choose a month">
+        <div class="month-year-nav">
+          <button type="button" class="month-nav-button" aria-label="Previous year" (click)="changePickerYear(-1)">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m12.5 4.5-5 5 5 5" /></svg>
+          </button>
+          <strong>{{ pickerYear() }}</strong>
+          <button type="button" class="month-nav-button" aria-label="Next year" (click)="changePickerYear(1)">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7.5 4.5 5 5-5 5" /></svg>
+          </button>
+        </div>
+        <div class="month-grid" role="group" aria-label="Months">
+          <button
+            *ngFor="let monthName of monthNames; let i = index"
+            type="button"
+            class="month-option"
+            [class.is-selected]="isSelectedMonth(i)"
+            [attr.aria-pressed]="isSelectedMonth(i)"
+            (click)="selectMonth(i)"
+          >{{ monthName }}</button>
+        </div>
+        <button type="button" class="month-current-button" (click)="selectCurrentMonth()">Go to this month</button>
+      </div>
+    </div>
+  </div>
+
+  <section aria-labelledby="summary-heading">
+    <h2 id="summary-heading" class="section-heading">Monthly summary</h2>
+    <p *ngIf="isSummaryLoading()" class="subtitle">Loading summary...</p>
+    <p *ngIf="summaryError()" class="form-error">Unable to load the summary.</p>
+    <div *ngIf="summary() as totals" class="stat-cards">
+      <article class="stat-card income"><span class="stat-icon">↗</span><span>Income</span><strong>{{ totals.totalIncome | number: '1.2-2' }}</strong><small>Money in this month</small></article>
+      <article class="stat-card expense"><span class="stat-icon">↘</span><span>Expenses</span><strong>{{ totals.totalExpense | number: '1.2-2' }}</strong><small>Money out this month</small></article>
+      <article class="stat-card" [class.negative]="totals.net < 0"><span class="stat-icon">◎</span><span>Net position</span><strong>{{ totals.net | number: '1.2-2' }}</strong><small>{{ totals.net < 0 ? 'Worth a closer look' : 'A positive month' }}</small></article>
+      <article class="stat-card"><span class="stat-icon">✦</span><span>Top category</span><strong class="category-value">{{ totals.topCategory || '—' }}</strong><small *ngIf="totals.topCategorySpend">{{ totals.topCategorySpend | number: '1.2-2' }} spent</small><small *ngIf="!totals.topCategorySpend">No spend yet</small></article>
+    </div>
+  </section>
+
+  <section class="chart-section chart-card" aria-labelledby="spend-heading">
+    <h2 id="spend-heading" class="section-heading">Spend by category</h2>
+    <p *ngIf="isBreakdownLoading()" class="subtitle">Loading category spend...</p>
+    <p *ngIf="breakdownError()" class="form-error">Unable to load category spending.</p>
+    <p *ngIf="!isBreakdownLoading() && !breakdownError() && categoryBreakdown().length === 0" class="subtitle">No transactions recorded yet for this period.</p>
+    <app-category-breakdown-chart *ngIf="categoryBreakdown().length > 0" [data]="categoryBreakdown()"></app-category-breakdown-chart>
+  </section>
+
+  <section class="chart-section chart-card" aria-labelledby="trend-heading">
+    <div class="chart-heading"><h2 id="trend-heading" class="section-heading">Monthly trend</h2><label class="field range-picker"><span>Period</span><select [value]="trendMonths()" (change)="onTrendMonthsChange($any($event.target).value)"><option value="3">3 months</option><option value="6">6 months</option><option value="12">12 months</option></select></label></div>
+    <p *ngIf="isTrendLoading()" class="subtitle">Loading trend...</p>
+    <p *ngIf="trendError()" class="form-error">Unable to load the monthly trend.</p>
+    <p *ngIf="!isTrendLoading() && !trendError() && !hasTrendData()" class="subtitle">No transactions recorded yet for this period.</p>
+    <app-monthly-trend-chart *ngIf="hasTrendData()" [data]="trend()"></app-monthly-trend-chart>
+  </section>
+</div>
